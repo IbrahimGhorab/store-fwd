@@ -5,19 +5,17 @@ import express, {
   json,
   urlencoded,
 } from "express";
-import { config } from "dotenv";
+import config from "./config";
 import morgan from "morgan";
 import helmet from "helmet";
 import errorMiddleware from "./middleware/errormiddleware";
 
-config();
-
 const app: Application = express();
+const port = config.port;
 app.use(json());
 app.use(morgan("common"));
 app.use(helmet());
 // app.use(urlencoded());
-const port = process.env.PORT;
 
 app.get("/", (req: Request, res: Response) => {
   throw new Error();
