@@ -9,6 +9,7 @@ import config from "./config";
 import morgan from "morgan";
 import helmet from "helmet";
 import errorMiddleware from "./middleware/errormiddleware";
+import db from "./database";
 
 const app: Application = express();
 const port = config.port;
@@ -28,6 +29,20 @@ app.post("/", (req: Request, res: Response) => {
 });
 
 app.use(errorMiddleware);
+
+// test database connection
+db.connect().then((client) => {
+  return client
+    .query(`select now()`)
+    .then((res) => {
+      client.release();
+      console.log(res.rows);
+    })
+    .catch((err) => {
+      client.release();
+      console.log(err.stack);
+    });
+});
 
 app.use((_req: Request, res: Response) => {
   res.status(404).json({ message: "you lost " });
