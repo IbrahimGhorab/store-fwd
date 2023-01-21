@@ -9,26 +9,27 @@ import config from "./config";
 import morgan from "morgan";
 import helmet from "helmet";
 import errorMiddleware from "./middleware/errormiddleware";
-import db from "./database";
+import routes from "./routes";
+// import db from "./database";
 
 const app: Application = express();
 const port = config.port;
 app.use(json());
 app.use(morgan("common"));
 app.use(helmet());
-// app.use(urlencoded());
+app.use(urlencoded({ extended: false }));
+app.use(errorMiddleware);
+app.use("/api", routes);
 
-app.get("/", (req: Request, res: Response) => {
-  throw new Error();
+app.get("/", (_req: Request, res: Response) => {
+  // throw new Error();
   res.send({ message: "hello world" });
 });
 
-app.post("/", (req: Request, res: Response) => {
-  console.log(req.body);
-  res.send({ message: "hello world from post request", data: req.body });
-});
-
-app.use(errorMiddleware);
+// app.post("/", (req: Request, res: Response) => {
+//   console.log(req.body);
+//   res.send({ message: "hello world from post request", data: req.body });
+// });
 
 // test database connection
 // db.connect().then((client) => {
