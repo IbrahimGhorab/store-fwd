@@ -10,6 +10,8 @@ const {
   PG_DB_TEST,
   PGUSER,
   PGPASSWORD,
+  BC_PASSWORD,
+  SALT_ROUND,
 } = process.env;
 
 export default {
@@ -19,4 +21,6 @@ export default {
   database: NODE_ENV === "dev" ? PG_DB : PG_DB_TEST,
   user: PGUSER,
   password: PGPASSWORD,
+  pepper: BC_PASSWORD,
+  salt: SALT_ROUND,
 };

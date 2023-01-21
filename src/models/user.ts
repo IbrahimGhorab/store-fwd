@@ -1,5 +1,13 @@
 import { User } from "../types";
+import bcrypt from "bcrypt";
 import db from "../database";
+import config from "../config";
+
+const hashPassWord = (password: string) => {
+  const salt = parseInt(config.salt as string, 10);
+  const hashedPass = bcrypt.hashSync(`${password}${config.pepper}`, salt);
+  return hashedPass;
+};
 
 class UserModel {
   async create(u: User): Promise<User> {
@@ -13,7 +21,7 @@ class UserModel {
         u.user_name,
         u.first_name,
         u.last_name,
-        u.password,
+        hashPassWord(u.password),
       ]);
       //release connection
       connection.release();
@@ -50,7 +58,7 @@ class UserModel {
       const sql = `select * from users where id = ($1)`;
 
       // Run the query
-      const result = await connection.query(sql);
+      const result = await connection.query(sql, [id]);
 
       // Release the connection to database
       connection.release();
@@ -71,7 +79,7 @@ class UserModel {
         u.user_name,
         u.first_name,
         u.last_name,
-        u.password,
+        hashPassWord(u.password),
         u.id,
       ]);
       connection.release();
@@ -88,7 +96,7 @@ class UserModel {
       // write sql query
       const sql = `delete from users where id=($1) returning id,email,user_name,first_name,last_name`;
       //run the Query
-      const result = await connection.query(sql);
+      const result = await connection.query(sql, [id]);
       //release the connection
       connection.release();
       // return the result

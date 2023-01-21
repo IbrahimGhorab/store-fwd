@@ -16,6 +16,8 @@ export const create = async (
       message: "user created successfully",
     });
   } catch (error) {
+    console.log(error);
+
     next(error);
   }
 };
@@ -33,6 +35,7 @@ export const getAll = async (
       message: "get all users successfully",
     });
   } catch (error) {
+    console.log(error);
     next(error);
   }
 };
@@ -50,6 +53,7 @@ export const getOne = async (
       message: `get user successfully`,
     });
   } catch (error) {
+    console.log(error);
     next(error);
   }
 };
@@ -67,6 +71,8 @@ export const updateOne = async (
       message: "user updated successfully",
     });
   } catch (error) {
+    console.log(error);
+
     next(error);
   }
 };
@@ -84,6 +90,8 @@ export const deleteOne = async (
       message: "user deleted successfully",
     });
   } catch (error) {
+    console.log(error);
+
     next(error);
   }
 };
