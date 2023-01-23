@@ -5,8 +5,8 @@ import config from "../config";
 
 const hashPassWord = (password: string) => {
   const salt = parseInt(config.salt as string, 10);
-  const hashedPass = bcrypt.hashSync(`${password}${config.pepper}`, salt);
-  return hashedPass;
+  const hashedPassword = bcrypt.hashSync(password + config.pepper, salt);
+  return hashedPassword;
 };
 
 class UserModel {
@@ -103,6 +103,34 @@ class UserModel {
       return result.rows[0];
     } catch (error) {
       throw new Error(`unable to delete user with id ${id}`);
+    }
+  }
+
+  //authenticate users
+  async authenticate(email: string, password: string): Promise<User | null> {
+    try {
+      const connection = await db.connect();
+      const sql = `select password from users where email=$1`;
+      const result = await connection.query(sql, [email]);
+      if (result.rows.length) {
+        const { password: hashPassword } = result.rows[0];
+        // const hashPassword = result.rows[0];
+        const isPasswordVaild = bcrypt.compareSync(
+          password + config.pepper,
+          hashPassword
+        );
+        if (isPasswordVaild) {
+          const userInfo = await connection.query(
+            `select * from users where email=$1`,
+            [email]
+          );
+          return userInfo.rows[0];
+        }
+      }
+      connection.release();
+      return null;
+    } catch (error) {
+      throw new Error(`unable to authenticate this user with email ${email}`);
     }
   }
 }

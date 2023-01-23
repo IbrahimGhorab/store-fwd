@@ -12,6 +12,7 @@ const {
   PGPASSWORD,
   BC_PASSWORD,
   SALT_ROUND,
+  TOKEN_SECRET,
 } = process.env;
 
 export default {
@@ -23,4 +24,5 @@ export default {
   password: PGPASSWORD,
   pepper: BC_PASSWORD,
   salt: SALT_ROUND,
+  jwtSecret: TOKEN_SECRET,
 };
